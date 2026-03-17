@@ -195,6 +195,29 @@ ORDER BY amp_count DESC;
 | `cna_alteration` | 2 (AMP) or -2 (HOMDEL) |
 | `off_panel` | 0 (on-panel) or 1 (off-panel) |
 
+## OncoKB Driver Mutations and OQL
+
+### What is OQL?
+OQL (Onco Query Language) is a query language used in the **cBioPortal web interface** to filter genomic alterations. It is NOT available via SQL queries on the ClickHouse backend.
+
+### The DRIVER Keyword
+In the cBioPortal web interface, OQL supports filtering for OncoKB-annotated driver mutations:
+- `BRAF: MUT_DRIVER` — BRAF mutations classified as drivers by OncoKB
+- `BRAF: V600E` — specific variant (works in both OQL and SQL)
+- `BRAF: MUT` — any BRAF mutation (works in both OQL and SQL)
+
+### CRITICAL: OncoKB Annotations Are NOT in the ClickHouse Database
+The `genomic_event_derived` table does NOT contain OncoKB driver/oncogenic annotations. There are no columns like `cbp_driver`, `oncokb_oncogenic`, or similar.
+
+When a user asks for "driver mutations" or "oncogenic mutations":
+1. **State the limitation**: OncoKB annotations are not available in the SQL database
+2. **Suggest the web interface**: Direct users to cBioPortal's web results view where OQL `DRIVER` filtering works
+   - URL pattern: `https://www.cbioportal.org/results/mutations?cancer_study_list={study_id}&gene_list=BRAF%3A%20MUT_DRIVER`
+3. **Offer SQL approximations** (with caveats):
+   - Filter by specific known hotspot variants: `mutation_variant IN ('V600E', 'V600K')`
+   - Filter by mutation type: `mutation_type IN ('Missense_Mutation', 'Nonsense_Mutation')`
+   - These are NOT equivalent to OncoKB driver filtering — always state this clearly
+
 ## Common Mistakes to Avoid
 
 ### ❌ DON'T: Filter mutation_status = 'SOMATIC'

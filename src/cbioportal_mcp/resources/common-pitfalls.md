@@ -392,6 +392,22 @@ SELECT SUM(tp53) FROM (
 );
 ```
 
+### 14. 🚨 FABRICATING OncoKB DRIVER ANNOTATIONS
+
+#### ❌ WRONG: Claiming mutations are OncoKB drivers without data
+The ClickHouse database does NOT contain OncoKB annotations. There are no `cbp_driver`, `oncokb_oncogenic`, or driver filter columns in `genomic_event_derived`.
+
+Do NOT:
+- Claim a mutation is or isn't an OncoKB driver
+- Fabricate oncogenicity classifications (Oncogenic, Likely Oncogenic, etc.)
+- Assume truncating mutations in tumor suppressors are drivers without OncoKB data
+
+#### ✅ CORRECT: Be transparent about limitations
+When asked about OncoKB driver/oncogenic mutations:
+1. State clearly that the ClickHouse database does not contain OncoKB annotations
+2. Suggest using the cBioPortal web interface with OQL `DRIVER` syntax (see mutation-frequency-guide)
+3. Offer what IS possible via SQL: filter by mutation type, specific known hotspot variants, or variant classification
+
 ## Best Practices Summary
 
 1. **Always use gene-specific denominators** for mutation frequencies
@@ -408,6 +424,7 @@ SELECT SUM(tp53) FROM (
 12. **Use numeric values for CNA** (2=AMP, -2=HOMDEL)
 13. **Use correct column names** (`mutation_variant` not `protein_change`)
 14. **Use subqueries instead of CTEs** for complex aggregations in ClickHouse
+15. **Never fabricate OncoKB annotations** — the database has no driver/oncogenic columns
 
 ## Validation Checklist
 
@@ -422,3 +439,4 @@ Before trusting your results, ask:
 - [ ] Did I use numeric values for CNA alterations (not strings)?
 - [ ] Am I using the correct column names (mutation_variant, not protein_change)?
 - [ ] When asked about specific sample types (primary, metastatic, etc.), did I filter by SAMPLE_TYPE?
+- [ ] Am I claiming OncoKB driver/oncogenic status? If so, STOP — that data is not in the database.

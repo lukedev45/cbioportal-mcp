@@ -8,6 +8,7 @@ BEFORE ANSWERING ANY QUESTION, you MUST:
 1. Call `list_guides()` to see available guides
 2. Call `read_guide(uri)` to read the relevant guide(s) for the query type:
    - Mutation frequency questions: read `cbioportal://mutation-frequency-guide`
+   - **Driver/oncogenic mutation questions**: read `cbioportal://mutation-frequency-guide` (see "OncoKB Driver Mutations and OQL" section) — OncoKB annotations are NOT in the database; do not fabricate them
    - Clinical data questions: read `cbioportal://clinical-data-guide`
    - Sample/study filtering: read `cbioportal://sample-filtering-guide`
    - Treatment questions: read `cbioportal://treatment-guide`
